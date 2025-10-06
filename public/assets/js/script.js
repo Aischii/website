@@ -33,7 +33,6 @@ document.addEventListener("DOMContentLoaded", function() {
     const routes = {
     '/': { path: 'home.html', title: 'achikurimu' },
     '/about': { path: 'about.html', title: 'About - achikurimu' },
-    '/contact': { path: 'contact.html', title: 'Contact - achikurimu' },
     '/blog': { path: 'blog.html', title: 'Blog - achikurimu' },
     '/blog/post1': { path: 'blog/posts/post1.html', title: 'Blog Post 1 - achikurimu' },
     '/blog/post2': { path: 'blog/posts/post2.html', title: 'Blog Post 2 - achikurimu' },
