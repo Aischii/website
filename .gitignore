@@ -1,2 +1,4 @@
 node_modules
-messages.json
+.next
+out
+.env.local
