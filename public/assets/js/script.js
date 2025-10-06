@@ -37,11 +37,56 @@ document.addEventListener("DOMContentLoaded", function() {
     '/blog': { path: 'blog.html', title: 'Blog - achikurimu' },
     '/blog/post1': { path: 'blog/posts/post1.html', title: 'Blog Post 1 - achikurimu' },
     '/blog/post2': { path: 'blog/posts/post2.html', title: 'Blog Post 2 - achikurimu' },
-    '/portfolio': { path: 'portfolio.html', title: 'Portfolio - achikurimu' },
-    '/portfolio/project1': { path: 'portfolio/project1.html', title: 'Project 1 - achikurimu' },
-    '/portfolio/project2': { path: 'portfolio/project2.html', title: 'Project 2 - achikurimu' },
-    '/portfolio/project3': { path: 'portfolio/project3.html', title: 'Project 3 - achikurimu' },
+    '/games': { path: 'games.html', title: 'Games - achikurimu' },
+    '/music': { path: 'music.html', title: 'Music - achikurimu' },
+    '/website': { path: 'website.html', title: 'Website - achikurimu' },
+    '/links': { path: 'links.html', title: 'Links - achikurimu' },
+    '/guestbook': { path: 'guestbook.html', title: 'Guestbook - achikurimu' },
 };
+
+    const displayGuestbookMessages = async () => {
+        const guestbookMessages = document.getElementById('guestbook-messages');
+        if (!guestbookMessages) return;
+        try {
+            const response = await fetch('/api/messages');
+            const messages = await response.json();
+            guestbookMessages.innerHTML = '';
+            messages.forEach(message => {
+                const messageElement = document.createElement('div');
+                messageElement.innerHTML = `
+                    <p><strong>${message.name}</strong></p>
+                    <p>${message.message}</p>
+                    <hr>
+                `;
+                guestbookMessages.appendChild(messageElement);
+            });
+        } catch (error) {
+            console.error('Error loading guestbook messages:', error);
+        }
+    };
+
+    const handleGuestbookSubmit = async (e) => {
+        e.preventDefault();
+        const nameInput = document.getElementById('guestbook-name');
+        const messageInput = document.getElementById('guestbook-message');
+        try {
+            await fetch('/api/messages', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: nameInput.value,
+                    message: messageInput.value,
+                }),
+            });
+            nameInput.value = '';
+            messageInput.value = '';
+            displayGuestbookMessages();
+        } catch (error) {
+            console.error('Error submitting guestbook message:', error);
+        }
+    };
 
     const loadContent = async (path) => {
         const route = routes[path] || routes['/'];
@@ -61,6 +106,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     });
                 }
             });
+
+            if (path === '/guestbook') {
+                const guestbookForm = document.getElementById('guestbook-form');
+                if (guestbookForm) {
+                    guestbookForm.addEventListener('submit', handleGuestbookSubmit);
+                }
+                displayGuestbookMessages();
+            }
         } catch (error) {
             console.error('Error loading page:', error);
             mainContent.replaceChildren();
